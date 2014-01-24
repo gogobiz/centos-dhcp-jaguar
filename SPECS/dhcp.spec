@@ -18,7 +18,7 @@
 Summary:  Dynamic host configuration protocol software
 Name:     dhcp
 Version:  4.2.5
-Release:  23%{?dist}
+Release:  27%{?dist}
 # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
 # dcantrell maintaining the package) made incorrect use of the epoch and
 # that's why it is at 12 now.  It should have never been used, but it was.
@@ -619,6 +619,18 @@ done
 
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 12:4.2.5-27
+- Mass rebuild 2014-01-24
+
+* Mon Jan 13 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-26
+- update address lifetimes on RENEW/RENEW6 (#1032809)
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 12:4.2.5-25
+- Mass rebuild 2013-12-27
+
+* Fri Nov 22 2013 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-24
+- dhclient-script: set address lifetimes (#1032809)
+
 * Tue Nov 05 2013 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-23
 - dhcpd rejects the udp packet with checksum=0xffff (#1016143)
 
