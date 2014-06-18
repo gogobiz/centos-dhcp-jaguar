@@ -82,6 +82,8 @@ Patch48:  dhcp-4.2.5-next-server.patch
 Patch49:  dhcp-4.2.5-ipv6-bind-to-interface.patch
 Patch50:  dhcp-ffff-checksum.patch
 
+Patch1000: dhcp-4.2.5-centos-branding.patch 
+
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: libtool
@@ -351,6 +353,8 @@ rm -rf includes/isc-dhcp
 # dhcpd rejects the udp packet with checksum=0xffff (#1016143)
 # (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #25587])
 %patch50 -p1 -b .ffff
+
+%patch1000 -p1 -b .centos
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
