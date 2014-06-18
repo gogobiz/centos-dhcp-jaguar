@@ -623,6 +623,9 @@ done
 
 
 %changelog
+* Wed Jun 18 2014 Johnny Hughes <johnny@centos.org> - 12:4.2.5-27.el7.centos
+- Roll in CentOS Branding
+
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 12:4.2.5-27
 - Mass rebuild 2014-01-24
 
