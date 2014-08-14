@@ -82,6 +82,7 @@ Patch48:  dhcp-4.2.5-next-server.patch
 Patch49:  dhcp-4.2.5-ipv6-bind-to-interface.patch
 Patch50:  dhcp-ffff-checksum.patch
 Patch51:  dhcp-sd-daemon.patch
+Patch52:  dhcp-4.2.5-centos-branding.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -355,6 +356,7 @@ rm -rf includes/isc-dhcp
 
 # support for sending startup notification to systemd (#1087245)
 %patch51 -p1 -b .sd-daemon
+%patch52 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -629,6 +631,9 @@ done
 
 
 %changelog
+* Thu Aug 14 2014 CentOS Sources <bugs@centos.org> - 4.2.5-27.el7.centos.1
+- Roll in CentOS Branding
+
 * Mon Jul 07 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-27.1
 - support for sending startup notification to systemd (#1087245)
 
