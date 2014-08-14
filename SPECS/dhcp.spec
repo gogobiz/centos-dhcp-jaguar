@@ -18,7 +18,7 @@
 Summary:  Dynamic host configuration protocol software
 Name:     dhcp
 Version:  4.2.5
-Release:  27%{?dist}
+Release:  27%{?dist}.1
 # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
 # dcantrell maintaining the package) made incorrect use of the epoch and
 # that's why it is at 12 now.  It should have never been used, but it was.
@@ -81,8 +81,7 @@ Patch47:  dhcp-4.2.5-range6.patch
 Patch48:  dhcp-4.2.5-next-server.patch
 Patch49:  dhcp-4.2.5-ipv6-bind-to-interface.patch
 Patch50:  dhcp-ffff-checksum.patch
-
-Patch1000: dhcp-4.2.5-centos-branding.patch 
+Patch51:  dhcp-sd-daemon.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -90,7 +89,7 @@ BuildRequires: libtool
 BuildRequires: openldap-devel
 BuildRequires: libcap-ng-devel
 BuildRequires: bind-lite-devel
-BuildRequires: systemd
+BuildRequires: systemd systemd-devel
 %if 0%{?fedora}
 # %%check
 # there's no atf package in RHEL
@@ -354,7 +353,8 @@ rm -rf includes/isc-dhcp
 # (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #25587])
 %patch50 -p1 -b .ffff
 
-%patch1000 -p1 -b .centos
+# support for sending startup notification to systemd (#1087245)
+%patch51 -p1 -b .sd-daemon
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -398,7 +398,8 @@ CFLAGS="%{optflags} -fno-strict-aliasing" \
 %if 0%{?fedora}
     --with-atf \
 %endif
-    --enable-paranoia --enable-early-chroot
+    --enable-paranoia --enable-early-chroot \
+    --with-systemd
 %{__make} %{?_smp_mflags}
 
 %if 0%{?fedora}
@@ -515,10 +516,15 @@ exit 0
 # Initial installation
 %systemd_post dhcpd.service dhcpd6.service dhcrelay.service
 
-# Update
-if [ $1 -gt 1 ] ; then
-  chown -R dhcpd:dhcpd %{_localstatedir}/lib/dhcpd/
-fi
+chown -R dhcpd:dhcpd %{_localstatedir}/lib/dhcpd/
+
+for servicename in dhcpd dhcpd6 dhcrelay; do
+  etcservicefile=%{_sysconfdir}/systemd/system/${servicename}.service
+  if [ -f ${etcservicefile} ]; then
+    grep -q Type= ${etcservicefile} || sed -i '/\[Service\]/a Type=notify' ${etcservicefile}
+  fi
+done
+exit 0
 
 
 %preun
@@ -623,8 +629,8 @@ done
 
 
 %changelog
-* Wed Jun 18 2014 Johnny Hughes <johnny@centos.org> - 12:4.2.5-27.el7.centos
-- Roll in CentOS Branding
+* Mon Jul 07 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-27.1
+- support for sending startup notification to systemd (#1087245)
 
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 12:4.2.5-27
 - Mass rebuild 2014-01-24
