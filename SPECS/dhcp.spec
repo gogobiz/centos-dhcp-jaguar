@@ -86,6 +86,7 @@ Patch52:  dhcp-IPoIB-log-id.patch
 Patch53:  dhcp-dhc6-life.patch
 Patch54:  dhcp-hop-limit.patch
 Patch55:  dhcp-stateless-store-duid.patch
+Patch56:  dhcp-4.2.5-centos-branding.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -371,6 +372,7 @@ rm -rf includes/isc-dhcp
 
 # Write DUID_LLT even in stateless mode (#1156356)
 %patch55 -p1 -b .stateless-store-duid
+%patch56 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -638,6 +640,9 @@ done
 
 
 %changelog
+* Thu Mar 05 2015 CentOS Sources <bugs@centos.org> - 4.2.5-36.el7.centos
+- Roll in CentOS Branding
+
 * Tue Jan 20 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-36
 - use upstream patch for #1147240 (Relay-forward's Hop Limit)
 
