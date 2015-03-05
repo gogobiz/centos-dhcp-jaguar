@@ -18,7 +18,7 @@
 Summary:  Dynamic host configuration protocol software
 Name:     dhcp
 Version:  4.2.5
-Release:  27%{?dist}.2
+Release:  36%{?dist}
 # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
 # dcantrell maintaining the package) made incorrect use of the epoch and
 # that's why it is at 12 now.  It should have never been used, but it was.
@@ -79,10 +79,13 @@ Patch45:  dhcp-4.2.4-P2-conflex-do-forward-updates.patch
 Patch46:  dhcp-4.2.4-P2-dupl-key.patch
 Patch47:  dhcp-4.2.5-range6.patch
 Patch48:  dhcp-4.2.5-next-server.patch
-Patch49:  dhcp-4.2.5-ipv6-bind-to-interface.patch
+Patch49:  dhcp-multiple-6-clients.patch
 Patch50:  dhcp-ffff-checksum.patch
 Patch51:  dhcp-sd-daemon.patch
-Patch52:  dhcp-4.2.5-centos-branding.patch
+Patch52:  dhcp-IPoIB-log-id.patch
+Patch53:  dhcp-dhc6-life.patch
+Patch54:  dhcp-hop-limit.patch
+Patch55:  dhcp-stateless-store-duid.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -91,11 +94,6 @@ BuildRequires: openldap-devel
 BuildRequires: libcap-ng-devel
 BuildRequires: bind-lite-devel
 BuildRequires: systemd systemd-devel
-%if 0%{?fedora}
-# %%check
-# there's no atf package in RHEL
-BuildRequires: atf libatf-c-devel
-%endif
 %if %sdt
 BuildRequires: systemtap-sdt-devel
 %global tapsetdir    /usr/share/systemtap/tapset
@@ -347,8 +345,11 @@ rm -rf includes/isc-dhcp
 # (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #33098])
 %patch48 -p1 -b .next-server
 
-# dhclient: Bind socket to interface also for IPv6 (#1005814)
-%patch49 -p1 -b .ipv6-bind-to-interface
+# Fix the socket handling for DHCPv6 clients to allow multiple instances
+# of a client on a single machine to work properly.  Previously only
+# one client would receive the packets. (#1005814, #1151039)
+# (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #34784])
+%patch49 -p1 -b .multiple-6-clients
 
 # dhcpd rejects the udp packet with checksum=0xffff (#1016143)
 # (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #25587])
@@ -356,7 +357,20 @@ rm -rf includes/isc-dhcp
 
 # support for sending startup notification to systemd (#1087245)
 %patch51 -p1 -b .sd-daemon
-%patch52 -p1
+
+# Add GUIDs in the DHCP logs for IPoIB. (#1109947)
+%patch52 -p1 -b .IPoIB-log-id
+
+# [dhclient -6] infinite preferred/valid lifetime represented as -1 (#1133839)
+# (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #37084])
+%patch53 -p1 -b .life
+
+# Relay-forward Message's Hop Limit should be 32 (#1147240)
+# (Submitted to dhcp-bugs@isc.org - [ISC-Bugs #37426])
+%patch54 -p1 -b .hop-limit
+
+# Write DUID_LLT even in stateless mode (#1156356)
+%patch55 -p1 -b .stateless-store-duid
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -397,17 +411,9 @@ CFLAGS="%{optflags} -fno-strict-aliasing" \
     --enable-systemtap \
     --with-tapset-install-dir=%{tapsetdir} \
 %endif
-%if 0%{?fedora}
-    --with-atf \
-%endif
     --enable-paranoia --enable-early-chroot \
     --with-systemd
 %{__make} %{?_smp_mflags}
-
-%if 0%{?fedora}
-%check
-%{__make} check
-%endif
 
 %install
 %{__make} install DESTDIR=%{buildroot}
@@ -524,6 +530,7 @@ for servicename in dhcpd dhcpd6 dhcrelay; do
   etcservicefile=%{_sysconfdir}/systemd/system/${servicename}.service
   if [ -f ${etcservicefile} ]; then
     grep -q Type= ${etcservicefile} || sed -i '/\[Service\]/a Type=notify' ${etcservicefile}
+    sed -i 's/After=network.target/Wants=network-online.target\nAfter=network-online.target/' ${etcservicefile}
   fi
 done
 exit 0
@@ -631,13 +638,40 @@ done
 
 
 %changelog
-* Mon Oct 06 2014 CentOS Sources <bugs@centos.org> - 4.2.5-27.el7.centos.2
-- Roll in CentOS Branding
+* Tue Jan 20 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-36
+- use upstream patch for #1147240 (Relay-forward's Hop Limit)
 
-* Wed Oct 01 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-27.2
-- dhclient-script: it's OK if the arping reply comes from our system (#1148345)
+* Tue Dec 09 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-35
+- Write DUID_LLT even in stateless mode (#1156356)
 
-* Mon Jul 07 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-27.1
+* Tue Nov 18 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-34
+- Use network-online.target instead of network.target (#1145832)
+- dhclient-script: restorecon calls shouldn't be needed
+                   as we have SELinux transition rules (#1161500)
+
+* Fri Oct 10 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-33
+- Relay-forward Message's Hop Limit should be 32 (#1147240)
+
+* Thu Oct 09 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-32
+- fix problem (found by Coverity) in previously add patch
+
+* Thu Oct 09 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-31
+- dhcrelay -6 was not working due to patch for #1005814 (#1151039)
+
+* Wed Sep 10 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-30
+- 11-dhclient: handle "dhcp4-change" and limit it to chrony/ntp (#1093490)
+- [dhclient -6] infinite preferred/valid lifetime represented as -1 (#1133839)
+
+* Mon Sep 08 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-29
+- dhclient-script: fix stateless DHCPv6 mode (#1101149)
+- Add GUIDs in the DHCP logs for IPoIB. (#1109947)
+- dhclient-script: handle option 121 properly (#1109949)
+- dhclient-script: it's OK if the arping reply comes from our system (#1116004)
+- dhclient-script: PREINIT6: make sure link-local address is available (#1130803)
+- dhclient-script: IPv6 address which fails DAD is auto-removed when it was
+             added with valid_lft/preferred_lft other then 'forever' (#1133465)
+
+* Mon Jul 07 2014 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-28
 - support for sending startup notification to systemd (#1087245)
 
 * Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 12:4.2.5-27
