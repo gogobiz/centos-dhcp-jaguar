@@ -59,10 +59,10 @@ diff -up dhcp-4.2.4b1/client/dhclient.c.improved-xid dhcp-4.2.4b1/client/dhclien
 +		}
 +		/* we only use seed and no current time as a broadcast reply */
 +		/* will certainly be used by the hwaddrless interface */
-+		srandom(seed);
++		srandom(seed + ((unsigned)(cur_tv.tv_usec * 1000000)) + (unsigned)getpid());
 +	}
 +	else
-+	        srandom(seed + cur_time + (unsigned)getpid());
++	        srandom(seed + ((unsigned)(cur_tv.tv_usec * 1000000)) + (unsigned)getpid());
  
  	/* Setup specific Infiniband options */
  	for (ip = interfaces; ip; ip = ip->next) {

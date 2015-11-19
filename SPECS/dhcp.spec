@@ -18,7 +18,7 @@
 Summary:  Dynamic host configuration protocol software
 Name:     dhcp
 Version:  4.2.5
-Release:  36%{?dist}
+Release:  42%{?dist}
 # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
 # dcantrell maintaining the package) made incorrect use of the epoch and
 # that's why it is at 12 now.  It should have never been used, but it was.
@@ -86,7 +86,10 @@ Patch52:  dhcp-IPoIB-log-id.patch
 Patch53:  dhcp-dhc6-life.patch
 Patch54:  dhcp-hop-limit.patch
 Patch55:  dhcp-stateless-store-duid.patch
-Patch56:  dhcp-4.2.5-centos-branding.patch
+Patch56:  dhcp-vlanfilter.patch
+Patch57:  dhcp-option97-pxe-client-id.patch
+Patch58:  dhcp-client-request-release-bind-iface.patch
+Patch59:  dhcp-dns_client_cancelupdate.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -372,7 +375,18 @@ rm -rf includes/isc-dhcp
 
 # Write DUID_LLT even in stateless mode (#1156356)
 %patch55 -p1 -b .stateless-store-duid
-%patch56 -p1
+
+# dhcpd generates spurious responses when seeing requests from vlans on plain interface (#1175350)
+%patch56 -p1 -b .vlan
+
+# option 97 - pxe-client-id (#1175422)
+%patch57 -p1 -b .option97
+
+# send unicast request/release via correct interface (#1177351)
+%patch58 -p1 -b .bind-iface
+
+# dhclient crashes in dns_client_cancelupdate (#1187856)
+%patch59 -p1 -b .dns_client_cancelupdate
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -640,8 +654,25 @@ done
 
 
 %changelog
-* Thu Mar 05 2015 CentOS Sources <bugs@centos.org> - 4.2.5-36.el7.centos
-- Roll in CentOS Branding
+* Tue Oct 13 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-42
+- regenerate dhcp-vlanfilter.patch (#1175350)
+
+* Thu Sep 03 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-41
+- VLAN ID is only bottom 12-bits of TCI (#1175350)
+
+* Tue Jul 07 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-40
+- rebuilt (#1238461)
+
+* Thu Jun 25 2015 Jiri Popelka - 12:4.2.5-39
+- dhclient crashes in dns_client_cancelupdate (#1187856)
+
+* Wed Jun 24 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-38
+- correctly set IB's hw->hlen and add more randomness into xid generation (#1195693)
+- send unicast request/release via correct interface (#1177351)
+
+* Wed May 20 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-37
+- dhcpd generates spurious responses when seeing requests from vlans on plain interface (#1175350)
+- option 97 - pxe-client-id (#1175422)
 
 * Tue Jan 20 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-36
 - use upstream patch for #1147240 (Relay-forward's Hop Limit)
