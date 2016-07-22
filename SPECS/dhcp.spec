@@ -91,6 +91,7 @@ Patch57:  dhcp-option97-pxe-client-id.patch
 Patch58:  dhcp-client-request-release-bind-iface.patch
 Patch59:  dhcp-dns_client_cancelupdate.patch
 Patch60:  dhcp-4.2.5-centos-branding.patch
+Patch61:  dhcp-4.2.5-jaguar-log-lease-exhaustion.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -389,6 +390,9 @@ rm -rf includes/isc-dhcp
 # dhclient crashes in dns_client_cancelupdate (#1187856)
 %patch59 -p1 -b .dns_client_cancelupdate
 %patch60 -p1
+
+# jaguar log_lease_exhaustion (jsloan@gogoair.com)
+%patch61 p1 -b .jaguar_log_lease_exhaustion
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
