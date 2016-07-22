@@ -392,7 +392,7 @@ rm -rf includes/isc-dhcp
 %patch60 -p1
 
 # jaguar log_lease_exhaustion (jsloan@gogoair.com)
-%patch61 p1 -b .jaguar_log_lease_exhaustion
+%patch61 -p1 -b .jaguar_log_lease_exhaustion
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
