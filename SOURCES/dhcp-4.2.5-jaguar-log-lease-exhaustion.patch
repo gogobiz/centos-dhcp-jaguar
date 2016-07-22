@@ -1,3 +1,27 @@
+diff -purN a/client/dhclient.c b/client/dhclient.c
+--- a/client/dhclient.c	2016-07-20 16:31:22.000000000 -0600
++++ b/client/dhclient.c	2016-07-22 10:49:18.180826576 -0600
+@@ -344,7 +344,7 @@ main(int argc, char **argv) {
+ 		} else if (!strcmp(argv[i], "-v")) {
+ 			quiet = 0;
+ 		} else if (!strcmp(argv[i], "--version")) {
+-			log_info("isc-dhclient-%s", PACKAGE_VERSION);
++			log_info("isc-dhclient-%s-jaguar", PACKAGE_VERSION);
+ 			exit(0);
+ 		} else if (!strcmp(argv[i], "-I")) {
+ 			if ((++i == argc) || (argv[i] == NULL) || (*(argv[i])=='\0')) {
+diff -purN a/relay/dhcrelay.c b/relay/dhcrelay.c
+--- a/relay/dhcrelay.c	2016-07-20 16:31:22.000000000 -0600
++++ b/relay/dhcrelay.c	2016-07-22 10:49:58.164959411 -0600
+@@ -383,7 +383,7 @@ main(int argc, char **argv) {
+ 		} else if (!strcmp(argv[i], "--no-pid")) {
+ 			no_pid_file = ISC_TRUE;
+ 		} else if (!strcmp(argv[i], "--version")) {
+-			log_info("isc-dhcrelay-%s", PACKAGE_VERSION);
++			log_info("isc-dhcrelay-%s-jaguar", PACKAGE_VERSION);
+ 			exit(0);
+ 		} else if (!strcmp(argv[i], "--help") ||
+ 			   !strcmp(argv[i], "-h")) {
 diff -purN a/server/dhcp.c b/server/dhcp.c
 --- a/server/dhcp.c	2016-07-20 16:31:22.000000000 -0600
 +++ b/server/dhcp.c	2016-07-22 07:57:19.588728440 -0600
@@ -89,3 +113,15 @@ diff -purN a/server/dhcp.c b/server/dhcp.c
  			return;
  		}
  	}
+diff -purN a/server/dhcpd.c b/server/dhcpd.c
+--- a/server/dhcpd.c	2016-07-20 16:31:22.000000000 -0600
++++ b/server/dhcpd.c	2016-07-22 10:50:04.468295644 -0600
+@@ -399,7 +399,7 @@ main(int argc, char **argv) {
+ 			local_family_set = 1;
+ #endif /* DHCPv6 */
+ 		} else if (!strcmp (argv [i], "--version")) {
+-			log_info("isc-dhcpd-%s", PACKAGE_VERSION);
++			log_info("isc-dhcpd-%s-jaguar", PACKAGE_VERSION);
+ 			exit (0);
+ #if defined (TRACING)
+ 		} else if (!strcmp (argv [i], "-tf")) {
