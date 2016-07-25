@@ -24,7 +24,7 @@ diff -purN a/relay/dhcrelay.c b/relay/dhcrelay.c
  			   !strcmp(argv[i], "-h")) {
 diff -purN a/server/dhcp.c b/server/dhcp.c
 --- a/server/dhcp.c	2016-07-20 16:31:22.000000000 -0600
-+++ b/server/dhcp.c	2016-07-22 07:57:19.588728440 -0600
++++ b/server/dhcp.c	2016-07-25 09:42:40.782749330 -0600
 @@ -36,6 +36,10 @@
  #include <errno.h>
  #include <limits.h>
@@ -36,7 +36,7 @@ diff -purN a/server/dhcp.c b/server/dhcp.c
  #include "trace.h"
  static void commit_leases_ackout(void *foo);
  static void maybe_return_agent_options(struct packet *packet,
-@@ -116,6 +120,51 @@ char *print_hw_addr_or_client_id (packet
+@@ -116,6 +120,52 @@ char *print_hw_addr_or_client_id (packet
  				      packet -> raw -> chaddr);
  }
  
@@ -47,7 +47,7 @@ diff -purN a/server/dhcp.c b/server/dhcp.c
 +	u_int8_t hlen;
 +	u_int8_t * hbuf;
 +	pid_t pid;
-+	char * argv[4];
++	char * argv[5];
 +	char buffer[(HARDWARE_ADDR_LEN + 1) * 3];
 +	char * here;
 +	int status;
@@ -66,10 +66,11 @@ diff -purN a/server/dhcp.c b/server/dhcp.c
 +		if (hlen > 1) { *(here++) = ':'; }
 +	}
 +
-+	argv[0] = "/usr/local/sbin/dhcpexhaustion";
-+	argv[1] = name;
-+	argv[2] = buffer;
-+	argv[3] = NULL;
++	argv[0] = "/usr/local/sbin/dhcpindicate";
++	argv[1] = "failure";
++	argv[2] = name;
++	argv[3] = buffer;
++	argv[4] = NULL;
 +
 +	if ((pid = fork()) > 0) {
 +		waitpid(pid, &status, 0);
@@ -88,7 +89,7 @@ diff -purN a/server/dhcp.c b/server/dhcp.c
  void
  dhcp (struct packet *packet) {
  	int ms_nulltp = 0;
-@@ -298,6 +347,10 @@ dhcp (struct packet *packet) {
+@@ -298,6 +348,10 @@ dhcp (struct packet *packet) {
        out:
  	if (lease)
  		lease_dereference (&lease, MDL);
@@ -99,7 +100,7 @@ diff -purN a/server/dhcp.c b/server/dhcp.c
  }
  
  void dhcpdiscover (packet, ms_nulltp)
-@@ -388,10 +441,12 @@ void dhcpdiscover (packet, ms_nulltp)
+@@ -388,10 +442,12 @@ void dhcpdiscover (packet, ms_nulltp)
  			if (peer_has_leases)
  				log_error ("%s: peer holds all free leases",
  					   msgbuf);
