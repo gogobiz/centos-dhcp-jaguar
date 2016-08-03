@@ -92,6 +92,7 @@ Patch58:  dhcp-client-request-release-bind-iface.patch
 Patch59:  dhcp-dns_client_cancelupdate.patch
 Patch60:  dhcp-4.2.5-centos-branding.patch
 Patch61:  dhcp-4.2.5-jaguar-log-lease-exhaustion.patch
+Patch62:  dhcp-4.2.5-jaguar-build-id-none.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -393,6 +394,9 @@ rm -rf includes/isc-dhcp
 
 # jaguar log_lease_exhaustion (jsloan@gogoair.com)
 %patch61 -p1 -b .jaguar_log_lease_exhaustion
+
+# jaguar build-id-none (jsloan@gogoair.com)
+%patch62 -p1 -b .jaguar_build_id_none
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \

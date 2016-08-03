@@ -1,0 +1,33 @@
+diff -purN a/client/Makefile.am b/client/Makefile.am
+--- a/client/Makefile.am	2016-08-03 17:06:18.000000000 -0600
++++ b/client/Makefile.am	2016-08-03 17:09:41.062201158 -0600
+@@ -6,6 +6,7 @@ dhclient_SOURCES = clparse.c dhclient.c
+ 		   scripts/solaris scripts/openwrt
+ dhclient_LDADD = ../common/libdhcp.a ../omapip/libomapi.la \
+ 		 $(BIND9_LIBDIR) -ldns-export -lisc-export $(CAPNG_LDADD)
++dhclient_LDADD += --build-id=none
+ man_MANS = dhclient.8 dhclient-script.8 dhclient.conf.5 dhclient.leases.5
+ EXTRA_DIST = $(man_MANS)
+ 
+diff -purN a/relay/Makefile.am b/relay/Makefile.am
+--- a/relay/Makefile.am	2016-08-03 17:06:18.000000000 -0600
++++ b/relay/Makefile.am	2016-08-03 17:11:11.014894983 -0600
+@@ -4,6 +4,7 @@ sbin_PROGRAMS = dhcrelay
+ dhcrelay_SOURCES = dhcrelay.c
+ dhcrelay_LDADD = ../common/libdhcp.a ../omapip/libomapi.la \
+ 		 $(BIND9_LIBDIR) -ldns-export -lisc-export $(CAPNG_LDADD)
++dhcrelay_LDADD += --build-id=none
+ man_MANS = dhcrelay.8
+ EXTRA_DIST = $(man_MANS)
+ 
+diff -purN a/server/Makefile.am b/server/Makefile.am
+--- a/server/Makefile.am	2016-08-03 17:06:18.000000000 -0600
++++ b/server/Makefile.am	2016-08-03 17:11:36.070202396 -0600
+@@ -15,6 +15,7 @@ dhcpd_SOURCES = dhcpd.c dhcp.c bootp.c c
+ dhcpd_CFLAGS = $(LDAP_CFLAGS)
+ dhcpd_LDADD = ../common/libdhcp.a ../omapip/libomapi.la \
+ 	      ../dhcpctl/libdhcpctl.la $(BIND9_LIBDIR) -ldns-export -lisc-export
++dhcpd_LDADD += --build-id=none
+ 
+ man_MANS = dhcpd.8 dhcpd.conf.5 dhcpd.leases.5
+ EXTRA_DIST = $(man_MANS)
