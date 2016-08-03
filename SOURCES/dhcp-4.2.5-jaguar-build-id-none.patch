@@ -5,7 +5,7 @@ diff -purN a/client/Makefile.am b/client/Makefile.am
  		   scripts/solaris scripts/openwrt
  dhclient_LDADD = ../common/libdhcp.a ../omapip/libomapi.la \
  		 $(BIND9_LIBDIR) -ldns-export -lisc-export $(CAPNG_LDADD)
-+dhclient_LDFLAGS = -Wl,--build-id=0x4a6167756172
++dhclient_LDFLAGS = -Wl,--build-id=0x4a616775617221212121212121212121212121212121
  man_MANS = dhclient.8 dhclient-script.8 dhclient.conf.5 dhclient.leases.5
  EXTRA_DIST = $(man_MANS)
  
@@ -16,7 +16,7 @@ diff -purN a/relay/Makefile.am b/relay/Makefile.am
  dhcrelay_SOURCES = dhcrelay.c
  dhcrelay_LDADD = ../common/libdhcp.a ../omapip/libomapi.la \
  		 $(BIND9_LIBDIR) -ldns-export -lisc-export $(CAPNG_LDADD)
-+dhcrelay_LDFLAGS = -Wl,--build-id=0x4a6167756172
++dhcrelay_LDFLAGS = -Wl,--build-id=0x4a616775617221212121212121212121212121212121
  man_MANS = dhcrelay.8
  EXTRA_DIST = $(man_MANS)
  
@@ -27,7 +27,7 @@ diff -purN a/server/Makefile.am b/server/Makefile.am
  dhcpd_CFLAGS = $(LDAP_CFLAGS)
  dhcpd_LDADD = ../common/libdhcp.a ../omapip/libomapi.la \
  	      ../dhcpctl/libdhcpctl.la $(BIND9_LIBDIR) -ldns-export -lisc-export
-+dhcpd_LDFLAGS = -Wl,--build-id=0x4a6167756172
++dhcpd_LDFLAGS = -Wl,--build-id=0x4a616775617221212121212121212121212121212121
  
  man_MANS = dhcpd.8 dhcpd.conf.5 dhcpd.leases.5
  EXTRA_DIST = $(man_MANS)
