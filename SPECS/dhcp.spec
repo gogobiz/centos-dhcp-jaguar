@@ -21,7 +21,7 @@
 Summary:  Dynamic host configuration protocol software
 Name:     dhcp
 Version:  4.2.5
-Release:  42.2%{?dist}
+Release:  42.3%{?dist}
 # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
 # dcantrell maintaining the package) made incorrect use of the epoch and
 # that's why it is at 12 now.  It should have never been used, but it was.
@@ -96,6 +96,7 @@ Patch59:  dhcp-dns_client_cancelupdate.patch
 Patch60:  dhcp-4.2.5-centos-branding.patch
 Patch61:  dhcp-4.2.5-jaguar-log-lease-exhaustion.patch
 Patch62:  dhcp-4.2.5-jaguar-build-id-none.patch
+Patch63:  dhcp-4.2.5-jaguar-build-id-none-2.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -401,6 +402,9 @@ rm -rf includes/isc-dhcp
 # jaguar build-id-none (jsloan@gogoair.com)
 %patch62 -p1 -b .jaguar_build_id_none
 
+# jaguar build-id-none-2 (jsloan@gogoair.com)
+%patch63 -p1 -b .jaguar_build_id_none_2
+
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
             client/dhclient-script.8 client/dhclient.8 ; do
@@ -554,6 +558,11 @@ exit 0
 %systemd_post dhcpd.service dhcpd6.service dhcrelay.service
 
 chown -R dhcpd:dhcpd %{_localstatedir}/lib/dhcpd/
+
+strip -s %{_sbindir}/dhcpd
+strip -s %{_sbindir}/dhcrelay
+strip -s %{_sbindir}/dhclient
+strip -s %{_bindir}/omshell
 
 for servicename in dhcpd dhcpd6 dhcrelay; do
   etcservicefile=%{_sysconfdir}/systemd/system/${servicename}.service

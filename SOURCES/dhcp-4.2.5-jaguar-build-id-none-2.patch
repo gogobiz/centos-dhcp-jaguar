@@ -1,0 +1,11 @@
+diff -purN a/dhcpctl/Makefile.am b/dhcpctl/Makefile.am
+--- a/dhcpctl/Makefile.am	2016-08-04 11:30:23.000000000 -0600
++++ b/dhcpctl/Makefile.am	2016-08-04 11:52:53.264989501 -0600
+@@ -7,6 +7,7 @@ EXTRA_DIST = $(man_MANS)
+ omshell_SOURCES = omshell.c
+ omshell_LDADD = libdhcpctl.la ../common/libdhcp.a ../omapip/libomapi.la \
+ 	        $(BIND9_LIBDIR) -ldns-export -lisc-export
++omshell_LDFLAGS = -Wl,--build-id=0x4a61677561722121212121212121212121212121
+ 
+ libdhcpctl_la_SOURCES = dhcpctl.c callback.c remote.c
+ 
