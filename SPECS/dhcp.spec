@@ -1,6 +1,9 @@
 # SystemTap support is enabled by default
 %{!?sdt:%global sdt 1}
 
+# Disable /usr/lib/rpm/find-debuginfo.sh which edits binaries inc. build-id.
+%global debug_package %{nil}
+
 #http://lists.fedoraproject.org/pipermail/devel/2011-August/155358.html
 %global _hardened_build 1
 
