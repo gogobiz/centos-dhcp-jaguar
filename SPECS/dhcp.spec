@@ -93,6 +93,7 @@ Patch59:  dhcp-dns_client_cancelupdate.patch
 Patch60:  dhcp-prepend.patch
 Patch61:  dhcp-addignore.patch
 Patch62:  dhcp-max-fd-value.patch
+Patch63:  dhcp-4.2.5-centos-branding.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -399,6 +400,7 @@ rm -rf includes/isc-dhcp
 
 # unclosed TCP connections to OMAPI or failover ports can cause DoS (CVE-2016-2774)
 %patch62 -p1 -b .max-fd
+%patch63 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -666,6 +668,9 @@ done
 
 
 %changelog
+* Thu Nov 03 2016 CentOS Sources <bugs@centos.org> - 4.2.5-47.el7.centos
+- Roll in CentOS Branding
+
 * Tue Aug 09 2016 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-47
 - 1269596 - fix undefined variable in dhclient-script
 
