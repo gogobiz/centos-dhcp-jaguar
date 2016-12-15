@@ -21,7 +21,7 @@
 Summary:  Dynamic host configuration protocol software
 Name:     dhcp
 Version:  4.2.5
-Release:  42.3%{?dist}
+Release:  47%{?dist}-jag
 # NEVER CHANGE THE EPOCH on this package.  The previous maintainer (prior to
 # dcantrell maintaining the package) made incorrect use of the epoch and
 # that's why it is at 12 now.  It should have never been used, but it was.
@@ -93,10 +93,13 @@ Patch56:  dhcp-vlanfilter.patch
 Patch57:  dhcp-option97-pxe-client-id.patch
 Patch58:  dhcp-client-request-release-bind-iface.patch
 Patch59:  dhcp-dns_client_cancelupdate.patch
-Patch60:  dhcp-4.2.5-centos-branding.patch
-Patch61:  dhcp-4.2.5-jaguar-log-lease-exhaustion.patch
-Patch62:  dhcp-4.2.5-jaguar-build-id-none.patch
-Patch63:  dhcp-4.2.5-jaguar-build-id-none-2.patch
+Patch60:  dhcp-prepend.patch
+Patch61:  dhcp-addignore.patch
+Patch62:  dhcp-max-fd-value.patch
+Patch63:  dhcp-4.2.5-centos-branding.patch
+Patch500: dhcp-4.2.5-jaguar-log-lease-exhaustion.patch
+Patch501: dhcp-4.2.5-jaguar-build-id-none.patch
+Patch502: dhcp-4.2.5-jaguar-build-id-none-2.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -394,16 +397,25 @@ rm -rf includes/isc-dhcp
 
 # dhclient crashes in dns_client_cancelupdate (#1187856)
 %patch59 -p1 -b .dns_client_cancelupdate
-%patch60 -p1
+
+# dhclient refuses to prepend ipv6 nameserver (#1234251)
+%patch60 -p1 -b .prepend
+
+# [FEAT] Add ignore-client-uids option to dhcpd (#1306608)
+%patch61 -p1 -b .addignore
+
+# unclosed TCP connections to OMAPI or failover ports can cause DoS (CVE-2016-2774)
+%patch62 -p1 -b .max-fd
+%patch63 -p1
 
 # jaguar log_lease_exhaustion (jsloan@gogoair.com)
-%patch61 -p1 -b .jaguar_log_lease_exhaustion
+%patch500 -p1 -b .jaguar_log_lease_exhaustion
 
 # jaguar build-id-none (jsloan@gogoair.com)
-%patch62 -p1 -b .jaguar_build_id_none
+%patch501 -p1 -b .jaguar_build_id_none
 
 # jaguar build-id-none-2 (jsloan@gogoair.com)
-%patch63 -p1 -b .jaguar_build_id_none_2
+%patch502 -p1 -b .jaguar_build_id_none_2
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -676,8 +688,26 @@ done
 
 
 %changelog
-* Thu Nov 19 2015 CentOS Sources <bugs@centos.org> - 4.2.5-42.el7.centos
+* Thu Nov 03 2016 CentOS Sources <bugs@centos.org> - 4.2.5-47.el7.centos
 - Roll in CentOS Branding
+
+* Tue Aug 09 2016 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-47
+- 1269596 - fix undefined variable in dhclient-script
+
+* Thu Apr 21 2016 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-46
+- unclosed TCP connections to OMAPI or failover ports can cause DoS (CVE-2016-2774)
+
+* Mon Apr 18 2016 Zdenek Dohnal <zdohnal@redhat.com> - 12:4.2.5-45
+- 1267489 - dhclient-script does not respect DEFROUTE/GATEWAYDEV patched 
+
+* Mon Apr 18 2016 Zdenek Dohnal <zdohnal@redhat.com> - 12:4.2.5-44
+- 1269596 - dhclient-script doesn't keep old nameservers
+- 1193586 - DHCP renewal does not update lifetimes if MTU has changed
+- 1306608 - Add ignore-client-uids option to dhcpd
+- 1267489 - dhclient-script does not respect DEFROUTE/GATEWAYDEV 
+
+* Mon Apr 18 2016 Zdenek Dohnal <zdohnal@redhat.com> - 12:4.2.5-43
+- Fixing bug 1234251
 
 * Tue Oct 13 2015 Jiri Popelka <jpopelka@redhat.com> - 12:4.2.5-42
 - regenerate dhcp-vlanfilter.patch (#1175350)
