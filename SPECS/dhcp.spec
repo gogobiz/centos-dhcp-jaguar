@@ -97,6 +97,7 @@ Patch61:  dhcp-addignore.patch
 Patch62:  dhcp-max-fd-value.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1355827
 Patch63:  dhcp-4.2.5-rh1355827.patch
+Patch64:  dhcp-4.2.5-centos-branding.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -406,6 +407,7 @@ rm -rf includes/isc-dhcp
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=1355827
 %patch63 -p1
+%patch64 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -687,6 +689,9 @@ done
 
 
 %changelog
+* Mon Jul 31 2017 CentOS Sources <bugs@centos.org> - 4.2.5-58.el7.centos
+- Roll in CentOS Branding
+
 * Tue May 16 2017 Pavel Zhukov <pzhukov@redhat.com> - 12:4.2.5-58
 - Resolves 1374119: Add dns server variable to azure-cloud.sh script
 
