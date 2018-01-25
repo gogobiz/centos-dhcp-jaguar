@@ -98,6 +98,7 @@ Patch62:  dhcp-max-fd-value.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1355827
 Patch63:  dhcp-4.2.5-rh1355827.patch
 Patch64:  dhcp-4.2.5-reap_orphan_sockets.patch
+Patch65:  dhcp-4.2.5-centos-branding.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -409,6 +410,7 @@ rm -rf includes/isc-dhcp
 %patch63 -p1
 
 %patch64 -p1 -b .omapi_sd_leak
+%patch65 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -690,6 +692,9 @@ done
 
 
 %changelog
+* Thu Jan 25 2018 CentOS Sources <bugs@centos.org> - 4.2.5-58.el7.centos.1
+- Roll in CentOS Branding
+
 * Wed Dec 13 2017 Pavel Zhukov <pzhukov@redhat.com> - 12:4.2.5-58.1
 - Resolves: #1523475 - Fix omapi socket descriptors leak
 
