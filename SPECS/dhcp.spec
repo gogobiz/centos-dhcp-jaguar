@@ -102,6 +102,7 @@ Patch64:  dhcp-4.2.5-reap_orphan_sockets.patch
 Patch65:  dhcp-4.2.5-options_overflow.patch
 # CVE-2018-5733
 Patch66:  dhcp-4.2.5-reference_count_overflow.patch
+Patch67:  dhcp-4.2.5-centos-branding.patch
 
 BuildRequires: autoconf
 BuildRequires: automake
@@ -416,6 +417,7 @@ rm -rf includes/isc-dhcp
 
 %patch65 -p1 -b .options_overflow
 %patch66 -p1 -b .reference_overflow
+%patch67 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -697,6 +699,9 @@ done
 
 
 %changelog
+* Mon Mar 12 2018 CentOS Sources <bugs@centos.org> - 4.2.5-58.el7.centos.3
+- Roll in CentOS Branding
+
 * Wed Feb 28 2018 Pavel Zhukov <pzhukov@redhat.com> - 12:4.2.5-68
 - Resolves: #1550000 - CVE-2018-5733  Avoid buffer overflow reference counter
 
