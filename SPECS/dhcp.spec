@@ -108,6 +108,7 @@ Patch68:  dhcp-4.2.5-reap_orphan_sockets.patch
 Patch69:  dhcp-4.2.5-options_overflow.patch
 # CVE-2018-5733
 Patch70:  dhcp-4.2.5-reference_count_overflow.patch
+Patch71:  dhcp-4.2.5-centos-branding.patch
 
 
 BuildRequires: autoconf
@@ -436,6 +437,7 @@ rm -rf includes/isc-dhcp
 
 %patch69 -p1 -b .options_overflow
 %patch70 -p1 -b .reference_overflow
+%patch71 -p1
 
 # Update paths in all man pages
 for page in client/dhclient.conf.5 client/dhclient.leases.5 \
@@ -717,6 +719,9 @@ done
 
 
 %changelog
+* Tue May 15 2018 CentOS Sources <bugs@centos.org> - 4.2.5-68.el7.centos.1
+- Roll in CentOS Branding
+
 * Tue Apr 24 2018 Pavel Zhukov <pzhukov@redhat.com> - 12:4.2.5-68.1
 - Resolves: #1570898 - Fix CVE-2018-1111: Do not parse backslash as escape character
 
